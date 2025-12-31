@@ -63,12 +63,13 @@ export function inicializarNavegacion(opciones = {}) {
 function manejarClickNavegacion(evento, link) {
     evento.preventDefault();
     
-    const href = link.getAttribute('href');
-    if (!href) return;
+    // Buscar data-section primero, luego href como fallback
+    const seccionId = link.getAttribute('data-section') || link.getAttribute('href');
+    if (!seccionId) return;
     
-    // Extraer ID de sección (quitar el #)
-    const seccionId = href.startsWith('#') ? href.substring(1) : href;
-    navegarA(seccionId);
+    // Si es href, quitar el #
+    const seccionFinal = seccionId.startsWith('#') ? seccionId.substring(1) : seccionId;
+    navegarA(seccionFinal);
 }
 
 /**
@@ -77,7 +78,12 @@ function manejarClickNavegacion(evento, link) {
  * @returns {boolean} True si la navegación fue exitosa
  */
 export function navegarA(seccionId) {
-    const seccion = obtenerElemento(`#${seccionId}`);
+    // Buscar sección por ID directo o con prefijo "seccion-"
+    let seccion = obtenerElemento(`#${seccionId}`);
+    if (!seccion) {
+        seccion = obtenerElemento(`#seccion-${seccionId}`);
+    }
+    
     if (!seccion) {
         console.warn(`Sección no encontrada: ${seccionId}`);
         return false;
@@ -116,23 +122,32 @@ function actualizarUINavegacion(seccionId) {
     // Actualizar links de navegación
     const navLinks = obtenerElementos('.nav-link');
     navLinks.forEach(link => {
+        // Buscar data-section primero, luego href como fallback
+        const dataSection = link.getAttribute('data-section');
         const href = link.getAttribute('href');
-        const linkSeccion = href?.startsWith('#') ? href.substring(1) : href;
+        const linkSeccion = dataSection || (href?.startsWith('#') ? href.substring(1) : href);
         
         if (linkSeccion === seccionId) {
             agregarClase(link, 'active');
+            link.setAttribute('aria-current', 'page');
         } else {
             removerClase(link, 'active');
+            link.removeAttribute('aria-current');
         }
     });
     
     // Actualizar visibilidad de secciones
     const secciones = obtenerElementos('.section');
     secciones.forEach(seccion => {
-        if (seccion.id === seccionId) {
+        // Buscar por ID exacto o por ID con prefijo "seccion-"
+        const esActiva = seccion.id === seccionId || seccion.id === `seccion-${seccionId}`;
+        
+        if (esActiva) {
             agregarClase(seccion, 'active');
+            seccion.removeAttribute('hidden');
         } else {
             removerClase(seccion, 'active');
+            seccion.setAttribute('hidden', '');
         }
     });
     
