@@ -188,13 +188,13 @@ async function iniciarAplicacion() {
 function configurarGenerador() {
     // Botón agregar prueba
     delegarEvento(document.body, 'click', '#btnAgregarPrueba', () => {
-        agregarFilaDinamica('bodyPruebas', 'fila-prueba');
+        agregarFilaDinamica('bodyPruebas', 'config-row');
         toastExito('Fila agregada');
     });
     
     // Botón agregar sociodemográfico
     delegarEvento(document.body, 'click', '#btnAgregarSocio', () => {
-        agregarFilaDinamica('bodySocio', 'fila-socio');
+        agregarFilaDinamica('bodySocio', 'config-row');
         toastExito('Variable agregada');
     });
     
