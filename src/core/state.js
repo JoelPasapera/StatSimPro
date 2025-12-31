@@ -330,8 +330,47 @@ export function activarDebugMode(activar = true) {
     return debugListenerId;
 }
 
+/**
+ * Objeto Store con API simplificada compatible con app.js
+ * Proporciona métodos getState, setState y subscribe
+ * @type {Object}
+ */
+export const store = {
+    /**
+     * Obtiene el estado actual completo
+     * @returns {Object} Estado actual
+     */
+    getState() {
+        return deepClone(estadoInterno);
+    },
+    
+    /**
+     * Actualiza el estado con nuevos valores
+     * @param {Object} nuevoEstado - Objeto con propiedades a actualizar
+     */
+    setState(nuevoEstado) {
+        Object.entries(nuevoEstado).forEach(([key, value]) => {
+            const oldValue = deepClone(estadoInterno[key]);
+            estadoInterno[key] = value;
+            notificarCambio(key, value, oldValue);
+        });
+    },
+    
+    /**
+     * Suscribe un callback a cambios en una clave específica
+     * @param {string} key - Clave a observar
+     * @param {Function} callback - Función a ejecutar
+     * @returns {Function} Función para desuscribirse
+     */
+    subscribe(key, callback) {
+        const id = suscribir(key, ({ newValue }) => callback(newValue));
+        return () => desuscribir(id);
+    }
+};
+
 export default {
     estado,
+    store,
     suscribir,
     desuscribir,
     obtenerEstado,
