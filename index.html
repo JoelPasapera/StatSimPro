@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="StatSim Pro - Simulador y analizador estadístico para investigación académica">
+    <meta name="author" content="Joel Pasapera">
+    
+    <title>StatSim Pro - Simulador Estadístico</title>
+    
+    <!-- Fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Estilos -->
+    <link rel="stylesheet" href="styles/main.css">
+    
+    <!-- Módulo principal -->
+    <script type="module" src="src/app.js"></script>
+</head>
+<body>
+    <!-- Skip Link para accesibilidad -->
+    <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+    
+    <!-- ========================================
+         HEADER
+    ======================================== -->
+    <header class="header" role="banner">
+        <div class="header-container">
+            <div class="logo">
+                <span class="logo-icon" aria-hidden="true">📊</span>
+                <h1 class="logo-text">StatSim Pro</h1>
+                <span class="version-badge">v1.0</span>
+            </div>
+            
+            <nav class="main-nav" role="navigation" aria-label="Navegación principal">
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <button class="nav-link active" data-section="simulador" aria-current="page">
+                            <span class="nav-icon" aria-hidden="true">🎲</span>
+                            <span class="nav-text">Simulador</span>
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-section="analizador">
+                            <span class="nav-icon" aria-hidden="true">📈</span>
+                            <span class="nav-text">Analizador</span>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ========================================
+         MAIN CONTENT
+    ======================================== -->
+    <main id="main-content" class="main-content">
+        
+        <!-- ====================================
+             SECCIÓN: SIMULADOR
+        ==================================== -->
+        <section id="seccion-simulador" class="section section-simulador active" aria-labelledby="titulo-simulador">
+            <div class="section-header">
+                <h2 id="titulo-simulador" class="section-title">Generador de Base de Datos</h2>
+                <p class="section-description">
+                    Genera datos simulados para pruebas psicométricas con distribución normal y variables sociodemográficas controladas.
+                </p>
+            </div>
+            
+            <!-- Configuración del tamaño muestral -->
+            <div class="config-card">
+                <h3 class="card-title">
+                    <span class="card-icon" aria-hidden="true">👥</span>
+                    Tamaño de Muestra
+                </h3>
+                <div class="form-group">
+                    <label for="tamanoMuestra" class="form-label">Número de participantes</label>
+                    <input 
+                        type="number" 
+                        id="tamanoMuestra" 
+                        class="form-input" 
+                        value="100" 
+                        min="10" 
+                        max="10000"
+                        aria-describedby="tamano-help"
+                    >
+                    <small id="tamano-help" class="form-help">
+                        Mínimo 10, máximo 10,000 participantes
+                    </small>
+                </div>
+            </div>
+            
+            <!-- Configuración de Pruebas Psicométricas -->
+            <div class="config-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <span class="card-icon" aria-hidden="true">📋</span>
+                        Pruebas Psicométricas
+                    </h3>
+                    <div class="card-actions">
+                        <button type="button" id="btnImportarPruebas" class="btn btn-outline btn-sm" title="Importar configuración">
+                            📥 Importar
+                        </button>
+                        <button type="button" id="btnExportarPruebas" class="btn btn-outline btn-sm" title="Exportar configuración">
+                            📤 Exportar
+                        </button>
+                        <button type="button" id="btnAgregarPrueba" class="btn btn-primary btn-sm">
+                            ➕ Agregar Prueba
+                        </button>
+                    </div>
+                </div>
+                <input type="file" id="importPruebasInput" accept=".csv" hidden aria-hidden="true">
+                
+                <div class="table-responsive">
+                    <table class="config-table" aria-label="Configuración de pruebas psicométricas">
+                        <thead>
+                            <tr>
+                                <th scope="col">Nombre de la Prueba</th>
+                                <th scope="col">N° Ítems</th>
+                                <th scope="col">Media (μ)</th>
+                                <th scope="col">Desv. Est. (σ)</th>
+                                <th scope="col">Mínimo</th>
+                                <th scope="col">Máximo</th>
+                                <th scope="col" class="col-actions">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bodyPruebas">
+                            <tr class="config-row" data-row-type="prueba">
+                                <td>
+                                    <input type="text" class="form-input input-sm" name="nombre" 
+                                           value="Escala de Ansiedad" placeholder="Nombre de la prueba">
+                                </td>
+                                <td>
+                                    <input type="number" class="form-input input-sm" name="numItems" 
+                                           value="20" min="1" max="500">
+                                </td>
+                                <td>
+                                    <input type="number" class="form-input input-sm" name="media" 
+                                           value="50" step="0.1">
+                                </td>
+                                <td>
+                                    <input type="number" class="form-input input-sm" name="desviacion" 
+                                           value="10" step="0.1" min="0.1">
+                                </td>
+                                <td>
+                                    <input type="number" class="form-input input-sm" name="minimo" 
+                                           value="20">
+                                </td>
+                                <td>
+                                    <input type="number" class="form-input input-sm" name="maximo" 
+                                           value="100">
+                                </td>
+                                <td class="col-actions">
+                                    <button type="button" class="btn btn-icon btn-delete" 
+                                            title="Eliminar fila" aria-label="Eliminar prueba">
+                                        🗑️
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Configuración de Variables Sociodemográficas -->
+            <div class="config-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <span class="card-icon" aria-hidden="true">📊</span>
+                        Variables Sociodemográficas
+                    </h3>
+                    <div class="card-actions">
+                        <button type="button" id="btnImportarSocio" class="btn btn-outline btn-sm">
+                            📥 Importar
+                        </button>
+                        <button type="button" id="btnExportarSocio" class="btn btn-outline btn-sm">
+                            📤 Exportar
+                        </button>
+                        <button type="button" id="btnAgregarSocio" class="btn btn-primary btn-sm">
+                            ➕ Agregar Variable
+                        </button>
+                    </div>
+                </div>
+                <input type="file" id="importSocioInput" accept=".csv" hidden aria-hidden="true">
+                
+                <div class="table-responsive">
+                    <table class="config-table" aria-label="Configuración de variables sociodemográficas">
+                        <thead>
+                            <tr>
+                                <th scope="col">Categoría</th>
+                                <th scope="col">Promedio</th>
+                                <th scope="col">Desv. Est.</th>
+                                <th scope="col">Mínimo</th>
+                                <th scope="col">Máximo</th>
+                                <th scope="col">Decimales</th>
+                                <th scope="col" class="col-actions">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bodySocio">
+                            <tr class="config-row" data-row-type="socio">
+                                <td>
+                                    <input type="text" class="form-input input-sm" name="categoria" 
+                                           value="Edad" placeholder="Nombre de variable">
+                                </td>
+                                <td>
+                                    <input type="number" class="form-input input-sm" name="promedio" 
+                                           value="25" step="0.1">
+                                </td>
+                                <td>
+                                    <input type="number" class="form-input input-sm" name="desviacion" 
+                                           value="5" step="0.1" min="0.1">
+                                </td>
+                                <td>
+                                    <input type="number" class="form-input input-sm" name="minimo" 
+                                           value="18">
+                                </td>
+                                <td>
+                                    <input type="number" class="form-input input-sm" name="maximo" 
+                                           value="65">
+                                </td>
+                                <td>
+                                    <input type="number" class="form-input input-sm" name="decimales" 
+                                           value="0" min="0" max="4">
+                                </td>
+                                <td class="col-actions">
+                                    <button type="button" class="btn btn-icon btn-delete" 
+                                            title="Eliminar fila" aria-label="Eliminar variable">
+                                        🗑️
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Botones de Acción -->
+            <div class="action-bar">
+                <button type="button" id="btnGenerar" class="btn btn-primary btn-lg">
+                    🎲 Generar Base de Datos
+                </button>
+            </div>
+            
+            <!-- Preview de Datos Generados -->
+            <div id="previewContainer" class="preview-container" hidden>
+                <div class="preview-header">
+                    <h3 class="preview-title">Vista Previa de Datos</h3>
+                    <div class="preview-stats" id="previewStats">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+                    <button type="button" id="btnDescargarCSV" class="btn btn-success">
+                        💾 Descargar CSV
+                    </button>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table" id="tablaPreview" aria-label="Vista previa de datos generados">
+                        <thead id="headPreview"></thead>
+                        <tbody id="bodyPreview"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====================================
+             SECCIÓN: ANALIZADOR
+        ==================================== -->
+        <section id="seccion-analizador" class="section section-analizador" aria-labelledby="titulo-analizador" hidden>
+            <div class="section-header">
+                <h2 id="titulo-analizador" class="section-title">Analizador de Correlaciones</h2>
+                <p class="section-description">
+                    Analiza correlaciones entre variables con pruebas de normalidad, interpretación automática 
+                    y generación de marco metodológico según estándares APA.
+                </p>
+            </div>
+            
+            <!-- Carga de Datos -->
+            <div class="config-card">
+                <h3 class="card-title">
+                    <span class="card-icon" aria-hidden="true">📁</span>
+                    Cargar Datos
+                </h3>
+                <div class="upload-zone" id="uploadZone" role="region" aria-label="Zona de carga de archivos">
+                    <div class="upload-content">
+                        <span class="upload-icon" aria-hidden="true">📄</span>
+                        <p class="upload-text">Arrastra tu archivo CSV aquí o</p>
+                        <label for="inputCSV" class="btn btn-outline">
+                            Seleccionar archivo
+                        </label>
+                        <input type="file" id="inputCSV" accept=".csv" hidden>
+                        <small class="upload-help">Formato: CSV con encabezados en la primera fila</small>
+                    </div>
+                </div>
+                
+                <!-- Mensaje de archivo cargado -->
+                <div id="archivoInfo" class="file-info" hidden>
+                    <span class="file-icon" aria-hidden="true">✅</span>
+                    <span class="file-name" id="nombreArchivo"></span>
+                    <span class="file-stats" id="statsArchivo"></span>
+                    <button type="button" id="btnLimpiarArchivo" class="btn btn-icon" title="Eliminar archivo">
+                        ❌
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Configuración del Análisis -->
+            <div class="config-card" id="configAnalisis" hidden>
+                <h3 class="card-title">
+                    <span class="card-icon" aria-hidden="true">⚙️</span>
+                    Configuración del Análisis
+                </h3>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="variable1" class="form-label">Variable 1</label>
+                        <select id="variable1" class="form-select" aria-describedby="var1-help">
+                            <option value="">-- Seleccionar --</option>
+                        </select>
+                        <small id="var1-help" class="form-help">Primera variable para correlacionar</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="variable2" class="form-label">Variable 2</label>
+                        <select id="variable2" class="form-select" aria-describedby="var2-help">
+                            <option value="">-- Seleccionar --</option>
+                        </select>
+                        <small id="var2-help" class="form-help">Segunda variable para correlacionar</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="unidadAnalisis" class="form-label">Unidad de Análisis</label>
+                        <input type="text" id="unidadAnalisis" class="form-input" 
+                               placeholder="Ej: estudiantes universitarios"
+                               aria-describedby="unidad-help">
+                        <small id="unidad-help" class="form-help">¿Quiénes son los participantes?</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="lugarContexto" class="form-label">Lugar/Contexto</label>
+                        <input type="text" id="lugarContexto" class="form-input" 
+                               placeholder="Ej: una universidad privada de Lima"
+                               aria-describedby="lugar-help">
+                        <small id="lugar-help" class="form-help">¿Dónde se realizó el estudio?</small>
+                    </div>
+                </div>
+                
+                <div class="action-bar">
+                    <button type="button" id="btnAnalizar" class="btn btn-primary btn-lg">
+                        📊 Ejecutar Análisis
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Resultados del Análisis -->
+            <div id="resultadosContainer" class="results-container" hidden>
+                <div class="results-header">
+                    <h3 class="results-title">Resultados del Análisis</h3>
+                    <div class="results-actions">
+                        <button type="button" id="btnDescargarResultados" class="btn btn-outline">
+                            📥 Descargar Reporte
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Marco Metodológico -->
+                <div id="resultadosMarco" class="result-panel">
+                    <!-- Se llena dinámicamente -->
+                </div>
+                
+                <!-- Pruebas de Normalidad -->
+                <div id="resultadosNormalidad" class="result-panel">
+                    <!-- Se llena dinámicamente -->
+                </div>
+                
+                <!-- Análisis de Correlación -->
+                <div id="resultadosCorrelacion" class="result-panel">
+                    <!-- Se llena dinámicamente -->
+                </div>
+                
+                <!-- Gráfico de Dispersión -->
+                <div id="resultadosGrafico" class="result-panel chart-panel">
+                    <canvas id="graficoDispersion" aria-label="Gráfico de dispersión"></canvas>
+                </div>
+                
+                <!-- Decisión Estadística -->
+                <div id="resultadosDecision" class="result-panel">
+                    <!-- Se llena dinámicamente -->
+                </div>
+                
+                <!-- Discusión -->
+                <div id="resultadosDiscusion" class="result-panel">
+                    <!-- Se llena dinámicamente -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ========================================
+         FOOTER
+    ======================================== -->
+    <footer class="footer" role="contentinfo">
+        <div class="footer-container">
+            <p class="footer-text">
+                <strong>StatSim Pro</strong> — Simulador estadístico para investigación académica
+            </p>
+            <p class="footer-credits">
+                Desarrollado con ❤️ por Joel Pasapera | 
+                Basado en metodología de Hernández-Sampieri & Mendoza (2023)
+            </p>
+        </div>
+    </footer>
+
+    <!-- ========================================
+         TOAST NOTIFICATIONS
+    ======================================== -->
+    <div id="toast" class="toast" role="alert" aria-live="polite" aria-atomic="true">
+        <!-- Contenido dinámico -->
+    </div>
+
+    <!-- ========================================
+         MODAL (para uso futuro)
+    ======================================== -->
+    <div id="modal" class="modal" role="dialog" aria-modal="true" hidden>
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modalTitle"></h4>
+                <button type="button" class="modal-close" aria-label="Cerrar modal">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Contenido dinámico -->
+            </div>
+            <div class="modal-footer" id="modalFooter">
+                <!-- Botones dinámicos -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================
+         LOADING OVERLAY
+    ======================================== -->
+    <div id="loadingOverlay" class="loading-overlay" hidden aria-busy="true">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p class="loading-text">Procesando...</p>
+        </div>
+    </div>
+</body>
+</html>
